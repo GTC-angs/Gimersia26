@@ -144,6 +144,7 @@ Assets/Resources/Scripts/CCC/
 * **Protokol No-Stuck `[P1]`: `Anti-Straggle Leash & Teleport Safety`**
   * Jika salah satu pemain tertinggal/AFK > 15 detik, muncul panah kompas penunjuk rekan. Pemain tertinggal dapat menahan tombol interact 3 detik untuk teleport santai ke samping pasangannya.
 * **Target Script:** `DynamicCameraController.cs`
+* **Reference Camera:** `Moving out` & Dual Split Vertical
 
 ---
 
