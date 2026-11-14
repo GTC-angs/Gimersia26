@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 7892084084222916056}
   - component: {fileID: 5562460798639130138}
   - component: {fileID: 6104590634732606381}
+  - component: {fileID: 8078686083374593423}
+  - component: {fileID: 5951418884026266689}
   m_Layer: 0
   m_Name: Player_P1_Husband
   m_TagString: Untagged
@@ -212,6 +214,54 @@ MonoBehaviour:
     m_Bits: 4294967295
   _ignoreSeconds: 0.3
   _maxFlightSeconds: 5
+--- !u!114 &8078686083374593423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551660830259482656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 861efc24ca954594b96484095786d7fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _swingRadius: 0.9
+  _secondsPerCell: 3
+  _cleanPointOffset: {x: 0, y: 0, z: 0.8}
+  _currentTool: 3
+  _cleanActionReference: {fileID: 0}
+  _drawGizmos: 1
+--- !u!114 &5951418884026266689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551660830259482656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player1
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &4279302700053840666
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,7 +443,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8772594898243180207}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
