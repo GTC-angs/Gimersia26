@@ -1,5 +1,5 @@
-// GrimeSpot.cs — Satu "petak" kotoran berbasis URP DecalProjector (SYS-01, SYS-02).
-// Fitur: level grime, aturan tool, progres bersih (Puddle 2 tahap), fade decal, event progres & selesai.
+// GrimeSpot.cs — Satu "petak" kotoran berbasis URP DecalProjector (SYS-01, SYS-02, SYS-05).
+// Fitur: level grime, aturan tool, progres bersih (Puddle 2 tahap), fade decal, 95% threshold per spot, event progres & selesai.
 using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -9,6 +9,10 @@ public class GrimeSpot : MonoBehaviour
 {
     [Header("Grime")]
     [SerializeField] private GrimeLevel _level = GrimeLevel.Dust;
+
+    [Header("SYS-05: 95% Clean Threshold (per spot)")]
+    [Tooltip("Begitu progres spot ini >= threshold, spot otomatis tuntas 100%.")]
+    [SerializeField, Range(0.5f, 1f)] private float _autoCompleteThreshold = 0.95f;
 
     [Header("Visual (URP Decal)")]
     [Tooltip("Kosongkan untuk auto-cari DecalProjector di object ini / child-nya.")]
@@ -66,6 +70,10 @@ public class GrimeSpot : MonoBehaviour
 
         float before = Progress01;
         _work = Mathf.Min(_work + workAmount, StageCount);
+
+        // SYS-05: threshold per individu spot — 95% -> tuntas 100%.
+        if (!IsClean && Progress01 >= _autoCompleteThreshold) _work = StageCount;
+
         float after = Progress01;
 
         refreshVisual();

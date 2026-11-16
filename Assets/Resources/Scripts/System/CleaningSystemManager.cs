@@ -12,10 +12,6 @@ public class CleaningSystemManager : MonoBehaviour
     [Tooltip("Cari semua GrimeSpot di scene saat Awake.")]
     [SerializeField] private bool _autoFindSpotsOnAwake = true;
 
-    [Header("SYS-05: 95% Clean Threshold")]
-    [Tooltip("Begitu rasio kebersihan >= threshold, semua spot otomatis dianggap bersih 100%.")]
-    [SerializeField, Range(0.5f, 1f)] private float _autoCompleteThreshold = 0.95f;
-
     [Header("Event")]
     [Tooltip("Event rasio hanya dikirim bila berubah minimal sebesar ini (hemat update UI).")]
     [SerializeField, Range(0f, 0.1f)] private float _ratioEventThreshold = 0.001f;
@@ -23,7 +19,6 @@ public class CleaningSystemManager : MonoBehaviour
     [SerializeField] private readonly List<GrimeSpot> _spots = new List<GrimeSpot>();
     private float _progressSum;
     private float _lastRaisedRatio;
-    private bool _autoCompleted;
 
     /// <summary>Rata-rata progres semua spot (0..1). Tidak ada spot = 1.</summary>
     public float CleanlinessRatio => _spots.Count == 0 ? 1f : Mathf.Clamp01(_progressSum / _spots.Count);
@@ -41,11 +36,6 @@ public class CleaningSystemManager : MonoBehaviour
 
     public event Action<float> OnCleanlinessRatioChanged;
     public event Action<GrimeSpot> OnSpotCleaned;
-    /// <summary>SYS-05: dilempar sekali saat threshold tercapai dan semua spot dipaksa bersih.</summary>
-    public event Action OnRoomCleaned;
-
-    /// <summary>True setelah auto-complete 95% terpicu (hingga ResetAllSpots).</summary>
-    public bool AutoCompleted => _autoCompleted;
 
     private void Awake()
     {
@@ -106,7 +96,6 @@ public class CleaningSystemManager : MonoBehaviour
 
     public void ResetAllSpots()
     {
-        _autoCompleted = false;
         for (int i = 0; i < _spots.Count; i++) _spots[i].ResetGrime();
         recalculateProgress();
         raiseRatioIfChanged(true);
@@ -116,7 +105,6 @@ public class CleaningSystemManager : MonoBehaviour
     {
         _progressSum = Mathf.Clamp(_progressSum + delta, 0f, _spots.Count);
         raiseRatioIfChanged(false);
-        checkAutoComplete();
     }
 
     private void handleSpotCleaned(GrimeSpot spot)
@@ -124,21 +112,6 @@ public class CleaningSystemManager : MonoBehaviour
         recalculateProgress(); // buang drift floating point
         raiseRatioIfChanged(false);
         OnSpotCleaned?.Invoke(spot);
-        checkAutoComplete();
-    }
-
-    /// <summary>SYS-05: jika rasio >= threshold, paksa semua spot bersih.</summary>
-    private void checkAutoComplete()
-    {
-        if (_autoCompleted) return;
-        if (_spots.Count == 0) return;
-        if (CleanlinessRatio < _autoCompleteThreshold) return;
-
-        _autoCompleted = true;
-        for (int i = 0; i < _spots.Count; i++) _spots[i].ForceClean();
-        recalculateProgress();
-        raiseRatioIfChanged(true);
-        OnRoomCleaned?.Invoke();
     }
 
     private void recalculateProgress()
