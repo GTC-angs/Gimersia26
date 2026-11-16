@@ -79,6 +79,18 @@ public class GrimeSpot : MonoBehaviour
         return true;
     }
 
+    /// <summary>Selesaikan spot ini seketika (SYS-05: 95% threshold). Aman dipanggil saat sudah bersih.</summary>
+    public void ForceClean()
+    {
+        if (IsClean) return;
+        float before = Progress01;
+        _work = StageCount;
+        refreshVisual();
+        if (_decal != null) _decal.enabled = false;
+        OnProgressChanged?.Invoke(this, 1f - before);
+        OnCleaned?.Invoke(this);
+    }
+
     /// <summary>Kembalikan ke kotor penuh (restart level / testing).</summary>
     public void ResetGrime()
     {

@@ -67,6 +67,7 @@ public class PlayerCarryController : MonoBehaviour
     public bool TryPickUp(Rigidbody item)
     {
         if (!enabled || IsCarrying || item == null || item.isKinematic) return false;
+        if (item.GetComponent<DropZoneLock>() != null) return false; // SYS-08: furnitur terkunci
 
         Weight weight = GetWeight(item);
 
@@ -98,6 +99,9 @@ public class PlayerCarryController : MonoBehaviour
         Rigidbody item = Detach();
 
         item.transform.SetPositionAndRotation(point, upright);
+
+        // SYS-07: jika jatuh di atas drop-zone valid, snap + kunci (SYS-08).
+        if (DropZoneManager.Instance != null) DropZoneManager.Instance.TrySnap(item);
 
         return true;
     }
