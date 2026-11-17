@@ -87,6 +87,8 @@ public class DropZoneManager : MonoBehaviour
 
         Transform t = item.transform;
         t.DOKill();
+        item.linearVelocity = Vector3.zero;
+        item.angularVelocity = Vector3.zero;
         item.isKinematic = true;
 
         Sequence seq = DOTween.Sequence();
@@ -107,8 +109,7 @@ public class DropZoneManager : MonoBehaviour
     {
         if (item == null) return;
         item.isKinematic = true;
-        item.linearVelocity = Vector3.zero;
-        item.angularVelocity = Vector3.zero;
+        
 
         DropZoneLock lockMarker = item.GetComponent<DropZoneLock>();
         if (lockMarker == null) lockMarker = item.gameObject.AddComponent<DropZoneLock>();

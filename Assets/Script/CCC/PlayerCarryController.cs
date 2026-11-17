@@ -112,6 +112,10 @@ public class PlayerCarryController : MonoBehaviour
         if (item == null) return null;
 
         _current = null;
+        ItemLandingVFX landingVFX = item.GetComponent<ItemLandingVFX>();
+
+        if (landingVFX != null)
+            landingVFX.OnDropped();
         item.transform.SetParent(null, true);
         item.isKinematic = false;
 
@@ -129,6 +133,10 @@ public class PlayerCarryController : MonoBehaviour
     private void Attach(Rigidbody item, Transform socket)
     {
         _current = item;
+        ItemLandingVFX landingVFX = item.GetComponent<ItemLandingVFX>();
+
+        if (landingVFX != null)
+            landingVFX.OnPickedUp();
         _parts = item.GetComponentsInChildren<Transform>(true);
         _originalLayers = new int[_parts.Length];
         _currentRadius = CalculateRadius(item);
