@@ -1952,6 +1952,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98af6aff0c0e17b4c84d04e2742e8965, type: 3}
+--- !u!1 &542338673
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 542338674}
+  m_Layer: 7
+  m_Name: ItemVFXSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &542338674
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542338673}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.302, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8717312887704034912}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &558634570
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9920,6 +9951,8 @@ GameObject:
   - component: {fileID: 8717312887704034914}
   - component: {fileID: 8717312887704034913}
   - component: {fileID: 8717312887704034915}
+  - component: {fileID: 8717312887704034916}
+  - component: {fileID: 8717312887704034917}
   m_Layer: 7
   m_Name: TV
   m_TagString: Untagged
@@ -11874,7 +11907,8 @@ Transform:
   m_LocalPosition: {x: 4.36, y: 0.29452768, z: -1.6354606}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 542338674}
   m_Father: {fileID: 543450651815646860}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &8717312887704034913
@@ -11938,10 +11972,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _snapPoint: {fileID: 888370212}
-  _radius: 0.9
+  _radius: 1.28
   _angleTolerance: 35
   _markerColor: {r: 0.6235, g: 0.8902, b: 0.7608, a: 0.87058824}
   _markerRenderer: {fileID: 888370213}
+--- !u!114 &8717312887704034916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3239839238468752101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15329d3cd0a3664aba711e3dcf6b026, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dustPrefab: {fileID: 4523624406689804377, guid: 67132cee808a27b479baa72a70765533, type: 3}
+  dustSpawnPoint: {fileID: 542338674}
+  dustRotation: {x: -90, y: 0, z: 0}
+  groundLayerName: Decals
+--- !u!114 &8717312887704034917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3239839238468752101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce77fd656825ef44f8a961699850895e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snapVFXPrefab: {fileID: 115323997886572896, guid: 29755c1c605eba74cb6c55ff330d5b60, type: 3}
+  spawnPoint: {fileID: 542338674}
+  rotationOffset: {x: -90, y: 0, z: 0}
 --- !u!33 &8757727678398333563
 MeshFilter:
   m_ObjectHideFlags: 0
