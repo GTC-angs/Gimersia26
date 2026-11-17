@@ -6,19 +6,24 @@ public class DropZone : MonoBehaviour
 {
     [Header("SYS-06: Zona")]
     [Tooltip("Titik & rotasi ideal barang. Kosongkan untuk pakai transform object ini.")]
-    [SerializeField] private Transform _snapPoint;
+    [SerializeField]
+    private Transform _snapPoint;
 
     [Tooltip("Radius deteksi snap (meter). Spec: 0.5.")]
-    [SerializeField, Min(0.05f)] private float _radius = 0.5f;
+    [SerializeField, Min(0.05f)]
+    private float _radius = 0.5f;
 
     [Tooltip("Toleransi sudut Y (derajat) item vs target. Spec: ±35°.")]
-    [SerializeField, Range(1f, 180f)] private float _angleTolerance = 35f;
+    [SerializeField, Range(1f, 180f)]
+    private float _angleTolerance = 35f;
 
     [Tooltip("Warna marker mint #9FE3C2.")]
-    [SerializeField] private Color _markerColor = new Color(0.6235f, 0.8902f, 0.7608f, 0.4f); // #9FE3C2
+    [SerializeField]
+    private Color _markerColor = new Color(0.6235f, 0.8902f, 0.7608f, 0.4f); // #9FE3C2
 
     [Tooltip("Renderer quad/plane marker. Kosongkan untuk auto-cari di child.")]
-    [SerializeField] private Renderer _markerRenderer;
+    [SerializeField]
+    private Renderer _markerRenderer;
 
     public float Radius => _radius;
     public float AngleTolerance => _angleTolerance;
@@ -31,32 +36,55 @@ public class DropZone : MonoBehaviour
 
     private void Awake()
     {
-        if (_snapPoint == null) _snapPoint = transform;
-        if (_markerRenderer == null) _markerRenderer = GetComponentInChildren<Renderer>(true);
+        if (_snapPoint == null)
+            _snapPoint = transform;
+        if (_markerRenderer == null)
+            _markerRenderer = GetComponentInChildren<Renderer>(true);
     }
 
     private void OnEnable()
     {
-        if (DropZoneManager.Instance != null) DropZoneManager.Instance.RegisterZone(this);
+        if (DropZoneManager.Instance != null)
+            DropZoneManager.Instance.RegisterZone(this);
+    }
+
+    void Start()
+    {
+        SetViewVisualizerObject(false);
+    }
+
+    public void SetViewVisualizerObject(bool isShow)
+    {
+        if (isShow)
+        {
+            _snapPoint.gameObject.SetActive(true);
+        }
+        else
+            _snapPoint.gameObject.SetActive(false);
     }
 
     private void OnDisable()
     {
-        if (DropZoneManager.Instance != null) DropZoneManager.Instance.UnregisterZone(this);
+        if (DropZoneManager.Instance != null)
+            DropZoneManager.Instance.UnregisterZone(this);
     }
 
     /// <summary>Cek apakah item berada dalam radius & sudut toleransi zona ini.</summary>
     public bool IsInRange(Rigidbody item)
     {
-        if (item == null || Occupant != null) return false;
+        if (item == null || Occupant != null)
+            return false;
 
         Vector3 itemPos = item.worldCenterOfMass;
         Vector3 zonePos = SnapPosition;
         float dx = itemPos.x - zonePos.x;
         float dz = itemPos.z - zonePos.z;
-        if (dx * dx + dz * dz > _radius * _radius) return false;
+        if (dx * dx + dz * dz > _radius * _radius)
+            return false;
 
-        float angle = Mathf.Abs(Mathf.DeltaAngle(item.transform.eulerAngles.y, SnapRotation.eulerAngles.y));
+        float angle = Mathf.Abs(
+            Mathf.DeltaAngle(item.transform.eulerAngles.y, SnapRotation.eulerAngles.y)
+        );
         return angle <= _angleTolerance;
     }
 

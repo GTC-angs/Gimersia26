@@ -88,7 +88,7 @@ public class DropZoneManager : MonoBehaviour
         Transform t = item.transform;
         t.DOKill();
         item.isKinematic = true;
-
+        
         Sequence seq = DOTween.Sequence();
         seq.Append(t.DOMove(zone.SnapPosition, _snapDuration).SetEase(Ease.OutQuad));
         seq.Join(t.DORotateQuaternion(zone.SnapRotation, _snapDuration));

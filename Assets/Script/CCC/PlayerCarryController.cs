@@ -9,30 +9,48 @@ public class PlayerCarryController : MonoBehaviour
     {
         Light,
         Medium,
-        Heavy
+        Heavy,
     }
 
     private const int RingSteps = 8;
     private const float DefaultRadius = 0.3f;
 
     [Header("Sockets")]
-    [SerializeField] private Transform _handSocket;
-    [SerializeField] private Transform _carryPivot;
+    [SerializeField]
+    private Transform _handSocket;
+
+    [SerializeField]
+    private Transform _carryPivot;
 
     [Header("Weight Tags")]
-    [SerializeField] private string _mediumTag = "Medium";
-    [SerializeField] private string _heavyTag = "Heavy";
+    [SerializeField]
+    private string _mediumTag = "Medium";
+
+    [SerializeField]
+    private string _heavyTag = "Heavy";
 
     [Header("Speed")]
-    [SerializeField, Range(0f, 1f)] private float _wifeMediumMultiplier = 0.7f;
-    [SerializeField, Range(0f, 1f)] private float _husbandHeavyMultiplier = 0.45f;
+    [SerializeField, Range(0f, 1f)]
+    private float _wifeMediumMultiplier = 0.7f;
+
+    [SerializeField, Range(0f, 1f)]
+    private float _husbandHeavyMultiplier = 0.45f;
 
     [Header("Safe Drop")]
-    [SerializeField] private string _carriedLayerName = "CarriedItem";
-    [SerializeField] private LayerMask _blockMask = ~0;
-    [SerializeField] private float _castHeight = 1f;
-    [SerializeField] private float _dropDistance = 1.2f;
-    [SerializeField] private float _fallbackRadius = 0.6f;
+    [SerializeField]
+    private string _carriedLayerName = "CarriedItem";
+
+    [SerializeField]
+    private LayerMask _blockMask = ~0;
+
+    [SerializeField]
+    private float _castHeight = 1f;
+
+    [SerializeField]
+    private float _dropDistance = 1.2f;
+
+    [SerializeField]
+    private float _fallbackRadius = 0.6f;
 
     private PlayerMovementController _movement;
     private PlayerStaminaController _stamina;
@@ -64,12 +82,34 @@ public class PlayerCarryController : MonoBehaviour
         _blockMask = _blockMask.value & ~((1 << _carriedLayer) | (1 << gameObject.layer));
     }
 
+    private void SetGrabbedCollision(Rigidbody item)
+    {
+        // Disable collision dengan semua layer
+        item.includeLayers = new LayerMask();
+        // item.excludeLayers = ~0;
+    }
+
+    private void SetReleasedCollision(Rigidbody item)
+    {
+        item.includeLayers = LayerMask.GetMask("Player");
+        // item.excludeLayers = ~LayerMask.GetMask("Player");
+    }
+
     public bool TryPickUp(Rigidbody item)
     {
-        if (!enabled || IsCarrying || item == null || item.isKinematic) return false;
-        if (item.GetComponent<DropZoneLock>() != null) return false; // SYS-08: furnitur terkunci
+        if (!enabled || IsCarrying || item == null || item.isKinematic)
+            return false;
+        if (item.GetComponent<DropZoneLock>() != null)
+            return false; // SYS-08: furnitur terkunci
 
         Weight weight = GetWeight(item);
+
+        var visualizer = item.GetComponent<DropZone>();
+        if (visualizer != null)
+        {
+            Debug.Log("Dapet viuslaisai object");
+            visualizer.SetViewVisualizerObject(true);
+        }
 
         if (weight == Weight.Heavy && !_movement.IsHusband)
         {
@@ -84,6 +124,9 @@ public class PlayerCarryController : MonoBehaviour
             return false;
         }
 
+        // turn off layer
+        SetGrabbedCollision(item);
+
         Attach(item, socket);
         ApplyWeightRules(weight);
 
@@ -92,16 +135,27 @@ public class PlayerCarryController : MonoBehaviour
 
     public bool TryDrop()
     {
-        if (!IsCarrying) return false;
+        if (!IsCarrying)
+            return false;
 
         Vector3 point = FindSafePoint(_currentRadius);
         Quaternion upright = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
         Rigidbody item = Detach();
 
+        SetReleasedCollision(item);
+
+        var visualizer = item.GetComponent<DropZone>();
+        if (visualizer != null)
+        {
+            Debug.Log("Dapet visulaisai object");
+            visualizer.SetViewVisualizerObject(false);
+        }
+
         item.transform.SetPositionAndRotation(point, upright);
 
         // SYS-07: jika jatuh di atas drop-zone valid, snap + kunci (SYS-08).
-        if (DropZoneManager.Instance != null) DropZoneManager.Instance.TrySnap(item);
+        if (DropZoneManager.Instance != null)
+            DropZoneManager.Instance.TrySnap(item);
 
         return true;
     }
@@ -109,7 +163,8 @@ public class PlayerCarryController : MonoBehaviour
     public Rigidbody Detach()
     {
         Rigidbody item = _current;
-        if (item == null) return null;
+        if (item == null)
+            return null;
 
         _current = null;
         item.transform.SetParent(null, true);
@@ -150,8 +205,10 @@ public class PlayerCarryController : MonoBehaviour
 
     private Weight GetWeight(Rigidbody item)
     {
-        if (item.CompareTag(_heavyTag)) return Weight.Heavy;
-        if (item.CompareTag(_mediumTag)) return Weight.Medium;
+        if (item.CompareTag(_heavyTag))
+            return Weight.Heavy;
+        if (item.CompareTag(_mediumTag))
+            return Weight.Medium;
 
         return Weight.Light;
     }
@@ -176,7 +233,8 @@ public class PlayerCarryController : MonoBehaviour
     private float CalculateRadius(Rigidbody item)
     {
         Collider[] colliders = item.GetComponentsInChildren<Collider>();
-        if (colliders.Length == 0) return DefaultRadius;
+        if (colliders.Length == 0)
+            return DefaultRadius;
 
         Bounds bounds = colliders[0].bounds;
         for (int i = 1; i < colliders.Length; i++)
@@ -193,20 +251,31 @@ public class PlayerCarryController : MonoBehaviour
         Vector3 direction = (transform.forward + Vector3.down * 0.5f).normalized;
         Vector3 candidate = origin + direction * _dropDistance;
 
-        if (Physics.SphereCast(origin, radius, direction, out RaycastHit hit,
-                _dropDistance, _blockMask, QueryTriggerInteraction.Ignore))
+        if (
+            Physics.SphereCast(
+                origin,
+                radius,
+                direction,
+                out RaycastHit hit,
+                _dropDistance,
+                _blockMask,
+                QueryTriggerInteraction.Ignore
+            )
+        )
         {
             candidate = origin + direction * hit.distance;
         }
 
-        if (IsFree(candidate, radius)) return candidate;
+        if (IsFree(candidate, radius))
+            return candidate;
 
         for (int i = 0; i < RingSteps; i++)
         {
             Vector3 ring = Quaternion.Euler(0f, i * 360f / RingSteps, 0f) * transform.forward;
             Vector3 spot = origin + ring * _fallbackRadius;
 
-            if (IsFree(spot, radius)) return spot;
+            if (IsFree(spot, radius))
+                return spot;
         }
 
         return origin;
@@ -214,6 +283,11 @@ public class PlayerCarryController : MonoBehaviour
 
     private bool IsFree(Vector3 point, float radius)
     {
-        return !Physics.CheckSphere(point, radius * 0.95f, _blockMask, QueryTriggerInteraction.Ignore);
+        return !Physics.CheckSphere(
+            point,
+            radius * 0.95f,
+            _blockMask,
+            QueryTriggerInteraction.Ignore
+        );
     }
 }
